@@ -9,8 +9,7 @@ def menu():
         print("2. Como jugar.")
         print("3. Mostrar valores de las cartas.")
         print("4. Mostrar estadísticas.")
-        print("5. Mostrar rankings.")
-        print("6. Salir")
+        print("5. Salir")
         opcion = input("Seleccione una opcion: ")
         if opcion == '1':
             jugar()
@@ -21,8 +20,6 @@ def menu():
         elif opcion == '4':
             mostrar_estadisticas()
         elif opcion == '5':
-            pass
-        elif opcion == '6':
             print("Saliendo..")
             salir = "salir"
         else:

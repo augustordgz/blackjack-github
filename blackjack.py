@@ -1,4 +1,5 @@
 import random
+from guardar import *
 
 cartas = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]
 palos = ["Diamantes","Trérboles","Picas","Corazones"]
@@ -18,6 +19,7 @@ valores = {
     "A": 11,
 }
 baraja = []
+nombre_usuario = ""
 partidas_jugadas = 0
 partidas_ganadas = 0
 partidas_perdidas = 0
@@ -48,8 +50,9 @@ def valor_mano(mano):
 
 def jugar():
     global partidas_jugadas, partidas_ganadas, partidas_perdidas, empates, saldo, nombre_usuario
-    while saldo > 0:
-        nombre_usuario = input("Ingrese su nombre de usuario: ")
+    nombre_usuario = input("Ingrese su nombre de usuario: ")
+    jugar = ""
+    while jugar != "n":
         print(f"Tu saldo es: {saldo}")
         apuesta = int(input("Ingrese el monto de la apuesta: "))
         while apuesta < 499 or apuesta > saldo:
@@ -92,6 +95,8 @@ def jugar():
         else:
             print(f"La mano del crupier es: {mano_crupier} y vale: {valor_mano(mano_crupier)}")
             while valor_mano(mano_crupier) < 17:
+                if valor_mano(mano_crupier) > valor_mano(mano_jugador):
+                    break
                 mano_crupier.append(repartir_carta(baraja))
                 print(f"El crupier pide otra carta. La mano del crupier es: {mano_crupier} y vale: {valor_mano(mano_crupier)}")
             if valor_mano(mano_crupier) > 21:
@@ -119,7 +124,11 @@ def jugar():
                 print(f" ------- Tu nuevo saldo es: {saldo} ------- ")
         if saldo < 0:
             print("Te quedaste sin saldo. Reinicia el juego para poder volver a jugar.")
+            break
         partidas_jugadas += 1
+        jugar = input("¿Quieres seguir jugando? (s/n): ")
+        if jugar == "n":
+            guardar_partida()
 
 def mostrar_estadisticas():
     print(f"Partidas jugadas: {partidas_jugadas}. Partidas ganadas: {partidas_ganadas}. Partidas perdidas: {partidas_perdidas}. Empates: {empates}.")

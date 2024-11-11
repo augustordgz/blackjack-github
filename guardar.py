@@ -1,11 +1,14 @@
 import json
 
 def guardar_partida():
+    from blackjack import nombre_usuario, partidas_jugadas, partidas_ganadas, partidas_perdidas, empates, saldo
     usuario = {
-        "Nombre": "augusto",
-        "Partidas jugadas": "0",
-    }
+        "Nombre": {nombre_usuario},
+        "Partidas Jugadas": {partidas_jugadas},
+        "Partidas Ganadas": {partidas_ganadas},
+        "Partidas Perdidas": {partidas_perdidas},
+        "Partidas Empatadas": {empates},
+        "Saldo": {saldo}
+        }
     with open("datos.json", "w") as file:
-            datos_usuario = json.dump(usuario, file, indent=4)
-
-guardar_partida()
+            json.dump(usuario, file, indent=4)
