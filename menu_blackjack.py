@@ -7,10 +7,10 @@ def menu():
         print("\nMenu:")
         print("1. Jugar partida.")
         print("2. Como jugar.")
-        print("3. Mostrar valores de las cartas.")
-        print("4. Mostrar estadísticas.")
+        print("3. Valores de las cartas.")
+        print("4. Mostrar estadísticas recientes.")
         print("5. Salir")
-        opcion = input("Seleccione una opcion: ")
+        opcion = int(input("Seleccione una opcion: "))
         if opcion == '1':
             jugar()
         elif opcion == '2':

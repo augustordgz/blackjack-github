@@ -19,12 +19,11 @@ valores = {
     "A": 11,
 }
 baraja = []
-nombre_usuario = ""
 partidas_jugadas = 0
 partidas_ganadas = 0
 partidas_perdidas = 0
 empates = 0
-saldo = 10000
+saldo = 0
 nombre_usuario = ""
 
 def crear_baraja(cartas, palos):
@@ -50,6 +49,7 @@ def valor_mano(mano):
 
 def jugar():
     global partidas_jugadas, partidas_ganadas, partidas_perdidas, empates, saldo, nombre_usuario
+    saldo = 10000
     nombre_usuario = input("Ingrese su nombre de usuario: ")
     jugar = ""
     while jugar != "n":
@@ -122,7 +122,7 @@ def jugar():
                 saldo += apuesta
                 apuesta = 0
                 print(f" ------- Tu nuevo saldo es: {saldo} ------- ")
-        if saldo < 0:
+        if saldo < 499:
             print("Te quedaste sin saldo. Reinicia el juego para poder volver a jugar.")
             break
         partidas_jugadas += 1
