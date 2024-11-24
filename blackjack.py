@@ -55,7 +55,7 @@ def jugar():
     while jugar != "n":
         print(f"Tu saldo es: {saldo}")
         apuesta = int(input("Ingrese el monto de la apuesta: "))
-        while apuesta < 499 or apuesta > saldo:
+        while apuesta < 500 or apuesta > saldo:
             print("Ingrese un monto válido (monto mínimo 500)")
             apuesta = int(input("Ingrese el monto de la apuesta: "))
         saldo -= apuesta

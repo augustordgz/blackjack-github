@@ -6,10 +6,15 @@ pygame.mixer.init()
 
 ventana = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption(NOMBRE_JUEGO)
-sonido_cartas = pygame.mixer.Sound("assets/audio/card-fan-1.ogg")
+sonido_crear_baraja = pygame.mixer.Sound("assets/audio/card-fan-1.ogg")
+sonido_cartas = pygame.mixer.Sound("assets/audio/card-place-2.ogg")
 
+imagenes_cartas= {
+    "2_corazones":pygame.image.load("assets/images/cards/PNG/Large/2_corazones.png"),
+    
+}
 fondo = pygame.image.load("assets/images/fondo.jpg")
-fuente = pygame.font.Font(None, 36)
+fuente = pygame.font.Font("assets/fonts/static/PixelifySans-Regular.ttf", 32)
 
 corriendo = True
 while corriendo:
