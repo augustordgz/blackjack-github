@@ -9,17 +9,20 @@ def menu():
         print("2. Como jugar.")
         print("3. Valores de las cartas.")
         print("4. Mostrar estadísticas recientes.")
-        print("5. Salir")
+        print("5. Mostrar partidas guardadas.")
+        print("6. Salir")
         opcion = int(input("Seleccione una opcion: "))
-        if opcion == '1':
+        if opcion == 1:
             jugar()
-        elif opcion == '2':
+        elif opcion == 2:
             print(juego)
-        elif opcion == '3':
+        elif opcion == 3:
             valores_cartas()
-        elif opcion == '4':
+        elif opcion == 4:
             mostrar_estadisticas()
-        elif opcion == '5':
+        elif opcion == 5:
+            mostrar_datos()
+        elif opcion == 6:
             print("Saliendo..")
             salir = "salir"
         else:

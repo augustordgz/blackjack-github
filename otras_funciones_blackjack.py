@@ -1,3 +1,4 @@
+import json
 from blackjack import valores
 
 juego = """El objetivo del blackjack es sencillo: cada jugador se enfrenta de forma individual a la banca, en busca de conseguir 21 puntos, o el número más cercano posible., sin pasarse. Para conseguirlos, cada jugador recibe dos cartas al inicio. 
@@ -20,3 +21,13 @@ Turno del crupier: Cuando se termina la ronda del jugador, el crupier gana si el
 
 def valores_cartas():
     return print(valores)
+
+def mostrar_datos():
+    try:
+        with open("datos.json", "r") as file:
+            datos = json.load(file)
+            for i in range(len(datos)):
+                for j in range(len(datos[i])):
+                    print(datos[i][j])
+    except FileNotFoundError:
+        print("No hay datos guardados para mostrar.")
