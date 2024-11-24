@@ -1,10 +1,9 @@
 import pygame 
+from constantes import *
+
 pygame.init()
 pygame.mixer.init()
 
-ANCHO = 800
-ALTO = 600
-NOMBRE_JUEGO = "BLACKJACK Grupo PRIME"
 ventana = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption(NOMBRE_JUEGO)
 sonido_cartas = pygame.mixer.Sound("assets/audio/card-fan-1.ogg")
@@ -23,10 +22,13 @@ while corriendo:
             if evento.key == pygame.K_SPACE:
                 sonido_cartas.set_volume(0.1)
                 sonido_cartas.play()
+            if evento.key == pygame.K_d:
+                pass
+            if evento.key == pygame.K_p:
+                pass
+            if evento.key == pygame.K_q:
+                pass
     ventana.blit(fondo, (0,0))
-    x, y = pygame.mouse.get_pos()
-    texto = fuente.render(f"Posicion del mouse: ({x}), ({y})", True, (118,238,198))
-    ventana.blit(texto, (120, 20))
     
     pygame.display.update()
 
