@@ -1,4 +1,5 @@
 import random
+import pygame
 from guardar import *
 
 cartas = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]
@@ -77,18 +78,23 @@ def jugar():
         while apuesta < 500 or apuesta > saldo:
             print("Ingrese un monto válido (monto mínimo 500)")
             apuesta = int(input("Ingrese el monto de la apuesta: "))
-        #ACORDATE DE DOCUMENTAR A PARTIR DE ACA ATTE: LEO PARA LEO
-        saldo -= apuesta
+        # resta el monto de la apuesta al saldo del jugador 
+        saldo -= apuesta 
+        # inicializa y mezcla la baraja de cartas
         crear_baraja(cartas,palos)
         random.shuffle(baraja)
+        # reparte dos cartas iniciales para el jugador y el crupier
         mano_jugador = [repartir_carta(baraja),repartir_carta(baraja)]
         mano_crupier = [repartir_carta(baraja),repartir_carta(baraja)]
+        # muestra la mano inicial del jugador y l aprimer carta del crupier
         print(f"Tu mano es: {mano_jugador} y vale: {valor_mano(mano_jugador)}")
         print(f"Primer carta del crupier: {mano_crupier[0]}.")
+        # ofrece al jugador la opcion de doblar el valor de su apuesta
         doblar = input("Queres doblar tu apuesta? (s/n): ")
         while doblar.lower() != "s" and doblar.lower() != "n":
             print("Ingrese una opción válida.")
             doblar = input("Queres doblar tu apuesta? (s/n): ")
+        # en caso de no doblar la apuesta, permite pedir cartas (SEGUI DOCUMENTANDO A PARTIR DE ACA)
         while valor_mano(mano_jugador) < 21 and doblar == "n":
             indicacion = input("¿Queres pedir otra carta (p) o quedarte (q)? (p/q): ")
             while indicacion.lower() != "q" and indicacion.lower() != "p":

@@ -1,6 +1,7 @@
-import pygame, sys
+import sys
+import pygame
 from constantes import *
-from blackjack import jugar, mostrar_estadisticas
+from blackjack import jugar
 from otras_funciones_blackjack import *
 
 # Inicialización de Pygame y mixer para audio
@@ -10,8 +11,15 @@ pygame.mixer.init()
 # Configuración de la ventana y sonidos del juego
 ventana = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption(NOMBRE_JUEGO)
+
+pygame.mixer.music.load("assets/audio/CASINO Jazz Music #1.mp3")
+pygame.mixer.music.set_volume(0.1)
+pygame.mixer.music.play(1)
+
 sonido_crear_baraja = pygame.mixer.Sound("assets/audio/card-fan-1.ogg")
+sonido_crear_baraja.set_volume(0.1)
 sonido_cartas = pygame.mixer.Sound("assets/audio/card-place-2.ogg")
+sonido_cartas.set_volume(0.1)
 
 # Carga de imagenes de fondo y la fuente de texto para el menú
 imagenes_cartas= {
@@ -87,7 +95,14 @@ botones = [
     {"text": "SALIR", "rect": pygame.Rect(300, 400, 200, 50), "color": GRIS},
 ]
 
-# Función para dibujar botones en la pantalla
+botones_blackjack = [
+    {"text": "DOBLAR", "rect": pygame.Rect(70, 100, 150, 50), "color": GRIS},
+    {"text": "PEDIR", "rect": pygame.Rect(70, 200, 150, 50), "color": GRIS},
+    {"text": "QUEDARSE", "rect": pygame.Rect(70, 300, 150, 50), "color": GRIS},
+    {"text": "SALIR", "rect": pygame.Rect(70, 400, 150, 50), "color": GRIS}
+]
+
+# Funciones para dibujar botones en la pantalla
 def dibujar_botones():
     for boton in botones:
         pygame.draw.rect(ventana, boton["color"], boton["rect"])
@@ -95,9 +110,19 @@ def dibujar_botones():
         texto_rect = texto.get_rect(center=boton["rect"].center)
         ventana.blit(texto, texto_rect)
 
+def dibujar_botones_blackjack():
+    for boton in botones_blackjack:
+        pygame.draw.rect(ventana, boton["color"], boton["rect"])
+        texto2 = font.render(boton["text"], True, NEGRO)
+        texto_rect2 = texto2.get_rect(center=boton["rect"].center)
+        ventana.blit(texto2, texto_rect2)
+
+
+# Definición de variables que se utilizan para las diferentes pantallas
 en_pantalla_partidas = False
 en_pantalla_como_jugar = False
 en_pantalla_valores = False
+en_pantalla_jugar = False
 corriendo = True
 datos = mostrar_datos()
 
@@ -106,7 +131,7 @@ while corriendo:
         if evento.type == pygame.QUIT:
             corriendo = False
     
-    # PARTE DEL MENÚ ------
+    #------ PARTE DEL MENÚ ------
     MENU_TEXT = font_title.render("BLACKJACK PRIME", True, BLANCO)
     MENU_RECT = MENU_TEXT.get_rect(center=(400, 125))
     ventana.blit(fondo, (0,0))
@@ -120,7 +145,7 @@ while corriendo:
             for boton in botones:
                 if boton["rect"].collidepoint(mouse_pos):
                     if boton["text"] == "JUGAR":
-                        jugar()
+                        en_pantalla_jugar = True
                     elif boton["text"] == "COMO JUGAR":
                         en_pantalla_como_jugar = True
                     elif boton["text"] == "VALORES":
@@ -143,7 +168,7 @@ while corriendo:
                 en_pantalla_valores = False
     
     if en_pantalla_como_jugar:
-        ventana.blit(fondo, (0,0))
+        ventana.fill(NEGRO)
         como_jugar = pygame.image.load("assets/images/como_jugar.png")
         ventana.blit(como_jugar, (0, 20))
         texto = font.render("ESC para volver al menú principal", True, NEGRO)
@@ -164,6 +189,25 @@ while corriendo:
         if evento.type == pygame.KEYDOWN:
             if evento.key == pygame.K_ESCAPE:
                 en_pantalla_partidas = False
+    
+    if en_pantalla_jugar:
+        ventana.blit(fondo, (0,0))
+        dibujar_botones_blackjack()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                corriendo = False
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
+                mouse_pos = pygame.mouse.get_pos()
+            for boton in botones_blackjack:
+                if boton["rect"].collidepoint(mouse_pos):
+                        if boton["text"] == "DOBLAR":
+                            pass
+                        elif boton["text"] == "PEDIR":
+                            pass
+                        elif boton["text"] == "QUEDARSE":
+                            pass
+                        elif boton["text"] == "SALIR":
+                            en_pantalla_jugar = False
     
     pygame.display.flip()
     pygame.display.update()
