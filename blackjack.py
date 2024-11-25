@@ -48,16 +48,36 @@ def valor_mano(mano):
     return total
 
 def jugar():
+    """
+    Esta es la funcion principal para jugar al BlackJack.
+    Variables globales utilizadas:
+    - partidas_jugadas: Número total de partidas jugadas.
+    - partidas_ganadas: Número de partidas ganadas por el jugador.
+    - partidas_perdidas: Número de partidas perdidas por el jugador.
+    - empates: Número de partidas empatadas.
+    - saldo: Dinero disponible para el jugador.
+    - nombre_usuario: Nombre ingresado por el jugador.
+
+    Lógica:
+    1. El jugador ingresa su nombre y juega varias rondas hasta decidir salir o quedarse sin saldo.
+    2. En cada ronda, el jugador apuesta y juega en su turno (puede pedir cartas o quedarse).
+    3. Al final de la ronda, se determina si el jugador gana, pierde o empata.
+    
+    """
     global partidas_jugadas, partidas_ganadas, partidas_perdidas, empates, saldo, nombre_usuario
-    saldo = 10000
-    nombre_usuario = input("Ingrese su nombre de usuario: ")
-    jugar = ""
+    saldo = 10000 #saldo inicial del jugador
+    nombre_usuario = input("Ingrese su nombre de usuario: ") #solicita un nombre al usuario
+    jugar = "" # variable de control para continuar o salir del juego
+    
+    # bucle principal del juego donde el jugador elige si seguir jugando o no
     while jugar != "n":
-        print(f"Tu saldo es: {saldo}")
-        apuesta = int(input("Ingrese el monto de la apuesta: "))
+        print(f"Tu saldo es: {saldo}")#te muestra tu saldo actual
+        apuesta = int(input("Ingrese el monto de la apuesta: "))# solicita el monto que se quiere apostar 
+        # valida que la apuesta sea un valor permitido para apostar minimamente
         while apuesta < 500 or apuesta > saldo:
             print("Ingrese un monto válido (monto mínimo 500)")
             apuesta = int(input("Ingrese el monto de la apuesta: "))
+        #ACORDATE DE DOCUMENTAR A PARTIR DE ACA ATTE: LEO PARA LEO
         saldo -= apuesta
         crear_baraja(cartas,palos)
         random.shuffle(baraja)
@@ -129,6 +149,3 @@ def jugar():
         jugar = input("¿Quieres seguir jugando? (s/n): ")
         if jugar == "n":
             guardar_partida()
-
-def mostrar_estadisticas():
-    print(f"Partidas jugadas: {partidas_jugadas}. Partidas ganadas: {partidas_ganadas}. Partidas perdidas: {partidas_perdidas}. Empates: {empates}.")
