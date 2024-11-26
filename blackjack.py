@@ -94,13 +94,16 @@ def jugar():
         while doblar.lower() != "s" and doblar.lower() != "n":
             print("Ingrese una opción válida.")
             doblar = input("Queres doblar tu apuesta? (s/n): ")
-        # en caso de no doblar la apuesta, permite pedir cartas (SEGUI DOCUMENTANDO A PARTIR DE ACA)
+        # en caso de no doblar la apuesta, permite pedir cartas o quedarse
         while valor_mano(mano_jugador) < 21 and doblar == "n":
             indicacion = input("¿Queres pedir otra carta (p) o quedarte (q)? (p/q): ")
+            
             while indicacion.lower() != "q" and indicacion.lower() != "p":
                 print("Ingrese una indicación válida (p/q)")
                 indicacion = input("¿Queres pedir otra carta (p) o quedarte (q)? (p/q): ")
-            if indicacion.lower() == "p":
+            
+            # si el jugador pide otra carta    
+            if indicacion.lower() == "p":  
                 mano_jugador.append(repartir_carta(baraja))
                 print(f"Tu mano es: {mano_jugador} y vale: {valor_mano(mano_jugador)}.")
                 if valor_mano(mano_jugador) > 21:

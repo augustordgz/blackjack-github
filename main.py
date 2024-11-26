@@ -1,4 +1,6 @@
 import sys
+import os
+import random
 import pygame
 from constantes import *
 from blackjack import jugar
@@ -22,65 +24,62 @@ sonido_cartas = pygame.mixer.Sound("assets/audio/card-place-2.ogg")
 sonido_cartas.set_volume(0.1)
 
 # Carga de imagenes de fondo y la fuente de texto para el menú
-imagenes_cartas= {
-    "2_corazones": pygame.image.load("assets/images/cards/PNG/Large/2_corazones.png"),
-    "3_corazones": pygame.image.load("assets/images/cards/PNG/Large/3_corazones.png"),
-    "4_corazones": pygame.image.load("assets/images/cards/PNG/Large/4_corazones.png"),
-    "5_corazones": pygame.image.load("assets/images/cards/PNG/Large/5_corazones.png"),
-    "6_corazones": pygame.image.load("assets/images/cards/PNG/Large/6_corazones.png"),
-    "7_corazones": pygame.image.load("assets/images/cards/PNG/Large/7_corazones.png"),
-    "8_corazones": pygame.image.load("assets/images/cards/PNG/Large/8_corazones.png"),
-    "9_corazones": pygame.image.load("assets/images/cards/PNG/Large/9_corazones.png"),
-    "10_corazones": pygame.image.load("assets/images/cards/PNG/Large/10_corazones.png"),
-    "j_corazones": pygame.image.load("assets/images/cards/PNG/Large/j_corazones.png"),
-    "q_corazones": pygame.image.load("assets/images/cards/PNG/Large/q_corazones.png"),
-    "k_corazones": pygame.image.load("assets/images/cards/PNG/Large/k_corazones.png"),
-    "as_corazones": pygame.image.load("assets/images/cards/PNG/Large/as_corazones.png"),
-    #hasta aca corazones
-    "2_treboles": pygame.image.load("assets/images/cards/PNG/Large/2_treboles.png"),
-    "3_treboles": pygame.image.load("assets/images/cards/PNG/Large/3_treboles.png"),
-    "4_treboles": pygame.image.load("assets/images/cards/PNG/Large/4_treboles.png"),
-    "5_treboles": pygame.image.load("assets/images/cards/PNG/Large/5_treboles.png"),
-    "6_treboles": pygame.image.load("assets/images/cards/PNG/Large/6_treboles.png"),
-    "7_treboles": pygame.image.load("assets/images/cards/PNG/Large/7_treboles.png"),
-    "8_treboles": pygame.image.load("assets/images/cards/PNG/Large/8_treboles.png"),
-    "9_treboles": pygame.image.load("assets/images/cards/PNG/Large/9_treboles.png"),
-    "10_treboles": pygame.image.load("assets/images/cards/PNG/Large/10_treboles.png"),
-    "j_treboles": pygame.image.load("assets/images/cards/PNG/Large/j_treboles.png"),
-    "q_treboles": pygame.image.load("assets/images/cards/PNG/Large/q_treboles.png"),
-    "k_treboles": pygame.image.load("assets/images/cards/PNG/Large/k_treboles.png"),
-    "as_treboles": pygame.image.load("assets/images/cards/PNG/Large/as_treboles.png"),
-    #hasta aca treboles
-    "2_diamantes": pygame.image.load("assets/images/cards/PNG/Large/2_diamantes.png"),
-    "3_diamantes": pygame.image.load("assets/images/cards/PNG/Large/3_diamantes.png"),
-    "4_diamantes": pygame.image.load("assets/images/cards/PNG/Large/4_diamantes.png"),
-    "5_diamantes": pygame.image.load("assets/images/cards/PNG/Large/5_diamantes.png"),
-    "6_diamantes": pygame.image.load("assets/images/cards/PNG/Large/6_diamantes.png"),
-    "7_diamantes": pygame.image.load("assets/images/cards/PNG/Large/7_diamantes.png"),
-    "8_diamantes": pygame.image.load("assets/images/cards/PNG/Large/8_diamantes.png"),
-    "9_diamantes": pygame.image.load("assets/images/cards/PNG/Large/9_diamantes.png"),
-    "10_diamantes": pygame.image.load("assets/images/cards/PNG/Large/10_diamantes.png"),
-    "j_diamantes": pygame.image.load("assets/images/cards/PNG/Large/j_diamantes.png"),
-    "q_diamantes": pygame.image.load("assets/images/cards/PNG/Large/q_diamantes.png"),
-    "k_diamantes": pygame.image.load("assets/images/cards/PNG/Large/k_diamantes.png"),
-    "as_diamantes": pygame.image.load("assets/images/cards/PNG/Large/as_diamantes.png"),
-    #hasta aca diamantes
-    "2_picas": pygame.image.load("assets/images/cards/PNG/Large/2_picas.png"),
-    "3_picas": pygame.image.load("assets/images/cards/PNG/Large/3_picas.png"),
-    "4_picas": pygame.image.load("assets/images/cards/PNG/Large/4_picas.png"),
-    "5_picas": pygame.image.load("assets/images/cards/PNG/Large/5_picas.png"),
-    "6_picas": pygame.image.load("assets/images/cards/PNG/Large/6_picas.png"),
-    "7_picas": pygame.image.load("assets/images/cards/PNG/Large/7_picas.png"),
-    "8_picas": pygame.image.load("assets/images/cards/PNG/Large/8_picas.png"),
-    "9_picas": pygame.image.load("assets/images/cards/PNG/Large/9_picas.png"),
-    "10_picas": pygame.image.load("assets/images/cards/PNG/Large/10_picas.png"),
-    "j_picas": pygame.image.load("assets/images/cards/PNG/Large/j_picas.png"),
-    "q_picas": pygame.image.load("assets/images/cards/PNG/Large/q_picas.png"),
-    "k_picas": pygame.image.load("assets/images/cards/PNG/Large/k_picas.png"),
-    "as_picas": pygame.image.load("assets/images/cards/PNG/Large/as_picas.png"),
-    #hasta aca picas
-    "parte_atras": pygame.image.load("assets/images/cards/PNG/Large/parte_atras.png")
+cartas = {
+    "2C": "assets/images/cards/PNG/Large/2_corazones.png",
+    "3C": "assets/images/cards/PNG/Large/3_corazones.png",
+    "4C": "assets/images/cards/PNG/Large/4_corazones.png",
+    "5C": "assets/images/cards/PNG/Large/5_corazones.png",
+    "6C": "assets/images/cards/PNG/Large/6_corazones.png",
+    "7C": "assets/images/cards/PNG/Large/7_corazones.png",
+    "8C": "assets/images/cards/PNG/Large/8_corazones.png",
+    "9C": "assets/images/cards/PNG/Large/9_corazones.png",
+    "10C": "assets/images/cards/PNG/Large/10_corazones.png",
+    "JC": "assets/images/cards/PNG/Large/j_corazones.png",
+    "QC": "assets/images/cards/PNG/Large/q_corazones.png",
+    "KC": "assets/images/cards/PNG/Large/k_corazones.png",
+    "AC": "assets/images/cards/PNG/Large/as_corazones.png",
+    "2T": "assets/images/cards/PNG/Large/2_treboles.png",
+    "3T": "assets/images/cards/PNG/Large/3_treboles.png",
+    "4T": "assets/images/cards/PNG/Large/4_treboles.png",
+    "5T": "assets/images/cards/PNG/Large/5_treboles.png",
+    "6T": "assets/images/cards/PNG/Large/6_treboles.png",
+    "7T": "assets/images/cards/PNG/Large/7_treboles.png",
+    "8T": "assets/images/cards/PNG/Large/8_treboles.png",
+    "9T": "assets/images/cards/PNG/Large/9_treboles.png",
+    "10T": "assets/images/cards/PNG/Large/10_treboles.png",
+    "JT": "assets/images/cards/PNG/Large/j_treboles.png",
+    "QT": "assets/images/cards/PNG/Large/q_treboles.png",
+    "KT": "assets/images/cards/PNG/Large/k_treboles.png",
+    "AT": "assets/images/cards/PNG/Large/as_treboles.png",
+    "2D": "assets/images/cards/PNG/Large/2_diamantes.png",
+    "3D": "assets/images/cards/PNG/Large/3_diamantes.png",
+    "4D": "assets/images/cards/PNG/Large/4_diamantes.png",
+    "5D": "assets/images/cards/PNG/Large/5_diamantes.png",
+    "6D": "assets/images/cards/PNG/Large/6_diamantes.png",
+    "7D": "assets/images/cards/PNG/Large/7_diamantes.png",
+    "8D": "assets/images/cards/PNG/Large/8_diamantes.png",
+    "9D": "assets/images/cards/PNG/Large/9_diamantes.png",
+    "10D": "assets/images/cards/PNG/Large/10_diamantes.png",
+    "JD": "assets/images/cards/PNG/Large/j_diamantes.png",
+    "QD": "assets/images/cards/PNG/Large/q_diamantes.png",
+    "KD": "assets/images/cards/PNG/Large/k_diamantes.png",
+    "AD": "assets/images/cards/PNG/Large/as_diamantes.png",
+    "2P":  "assets/images/cards/PNG/Large/2_picas.png",
+    "3P":  "assets/images/cards/PNG/Large/3_picas.png",
+    "4P":  "assets/images/cards/PNG/Large/4_picas.png",
+    "5P":  "assets/images/cards/PNG/Large/5_picas.png",
+    "6P":  "assets/images/cards/PNG/Large/6_picas.png",
+    "7P":  "assets/images/cards/PNG/Large/7_picas.png",
+    "8P":  "assets/images/cards/PNG/Large/8_picas.png",
+    "9P":  "assets/images/cards/PNG/Large/9_picas.png",
+    "10P": "assets/images/cards/PNG/Large/10_picas.png",
+    "JP":  "assets/images/cards/PNG/Large/j_picas.png",
+    "QP":  "assets/images/cards/PNG/Large/q_picas.png",
+    "KP":  "assets/images/cards/PNG/Large/k_picas.png",
+    "AP": "assets/images/cards/PNG/Large/as_picas.png"
 }
+imagenes_cartas = {clave: pygame.image.load(ruta) for clave, ruta in cartas.items()}
+reverso_carta = pygame.image.load("assets/images/cards/PNG/Large/parte_atras.png")  # Imagen para la carta volteada
 
 fondo = pygame.image.load("assets/images/fondo.jpg")
 font = pygame.font.Font("assets/fonts/static/PixelifySans-Regular.ttf", 30)
@@ -118,99 +117,199 @@ def dibujar_botones_blackjack():
         ventana.blit(texto2, texto_rect2)
 
 
+mazo = list(cartas.keys()) * 4  # Cada carta aparece 4 veces
+random.shuffle(mazo)
+
+# Función para calcular el valor de una mano
+def calcular_valor(mano):
+    """
+    Calcula el valor total de una mano en Blackjack.
+    :param mano: Lista de cartas (ejemplo: ["2C", "AP", "RD"]).
+    :return: Valor total de la mano.
+    """
+    valor = 0
+    ases = 0
+    for carta in mano:
+        if carta[0] in "JQK":  # Figuras (J, Q, K) valen 10
+            valor += 10
+        elif carta[0] == "A":  # Ases inicialmente valen 11
+            valor += 11
+            ases += 1
+        else:
+            try:
+                valor += int(carta[:-1])  # Cartas numéricas (ejemplo: "2C" -> 2)
+            except ValueError:
+                print(f"Error al interpretar la carta: {carta}")
+    # Ajustar los Ases si el valor total excede 21
+    while valor > 21 and ases > 0:
+        valor -= 10
+        ases -= 1
+    return valor
+
+def mostrar_texto(texto, tamaño, x, y, color=BLANCO):
+    fuente = pygame.font.Font(None, tamaño)
+    superficie_texto = fuente.render(texto, True, color)
+    ventana.blit(superficie_texto, (x, y))
+
+# Función para mostrar cartas
+def mostrar_cartas(mano, x_inicio, y, mostrar_segunda=True):
+    for i, carta in enumerate(mano):
+        if i == 1 and not mostrar_segunda:
+            ventana.blit(reverso_carta, (x_inicio + i * 100, y))
+        else:
+            ventana.blit(imagenes_cartas[carta], (x_inicio + i * 100, y))
+
+
 # Definición de variables que se utilizan para las diferentes pantallas
-en_pantalla_partidas = False
-en_pantalla_como_jugar = False
-en_pantalla_valores = False
-en_pantalla_jugar = False
 corriendo = True
 datos = mostrar_datos()
+mano_jugador = [mazo.pop(), mazo.pop()]
+mano_croupier = [mazo.pop(), mazo.pop()]
+turno_jugador = True
+revelar_cartas_croupier = False
+resultado = ""
 
-while corriendo:
-    for evento in pygame.event.get():
-        if evento.type == pygame.QUIT:
-            corriendo = False
+def cargar_jugadores():
+    if os.path.exists("datos.json"):
+        with open("datos.json", "r") as file:
+            return json.load(file)
+    return {}
+
+def ingresar_usuario():
+    jugadores = cargar_jugadores()
+    font = pygame.font.Font("assets/fonts/static/PixelifySans-Medium.ttf", 36)
+    nombre = ""
     
-    #------ PARTE DEL MENÚ ------
-    MENU_TEXT = font_title.render("BLACKJACK PRIME", True, BLANCO)
-    MENU_RECT = MENU_TEXT.get_rect(center=(400, 125))
-    ventana.blit(fondo, (0,0))
-    ventana.blit(MENU_TEXT, MENU_RECT)
-    dibujar_botones()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            corriendo = False
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
-            mouse_pos = pygame.mouse.get_pos()
-            for boton in botones:
-                if boton["rect"].collidepoint(mouse_pos):
-                    if boton["text"] == "JUGAR":
-                        en_pantalla_jugar = True
-                    elif boton["text"] == "COMO JUGAR":
-                        en_pantalla_como_jugar = True
-                    elif boton["text"] == "VALORES":
-                        en_pantalla_valores = True
-                    elif boton["text"] == "PARTIDAS":
-                        en_pantalla_partidas = True
-                    elif boton["text"] == "SALIR":
-                        corriendo = False
-    
-    if en_pantalla_valores:
-        # Fondo y texto para la pantalla de valores
-        ventana.blit(fondo, (0,0)) 
+    while True:
+        ventana.blit(fondo, (0,0))
+        texto_ingresar = font.render("Ingrese su nombre:", True, BLANCO)
+        texto_nombre = font.render(nombre, True, BLANCO)
+        
+        ventana.blit(texto_ingresar, (100, 200))
+        ventana.blit(texto_nombre, (450, 200))
+        
+        pygame.display.flip()  # Asegurar que la pantalla se actualice
+        
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_RETURN:  # Confirmar con Enter
+                    if nombre and nombre not in jugadores:
+                        return nombre
+                elif evento.key == pygame.K_BACKSPACE:  # Borrar último carácter
+                    nombre = nombre[:-1]
+                else:
+                    nombre += evento.unicode  # Agregar caracteres
+
+
+def mostrar_valores():
+    while True:
+        ventana.blit(fondo, (0, 0))
         valores_cartas = pygame.image.load("assets/images/valores_cartas.png")
         ventana.blit(valores_cartas, (0, 50))
         texto = font.render("ESC para volver al menú principal", True, BLANCO)
         ventana.blit(texto, (0, 565))
-        #if que si apretamos la tecla escape nos vuelve al menú principal del juego
-        if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_ESCAPE:
-                en_pantalla_valores = False
-    
-    if en_pantalla_como_jugar:
-        ventana.fill(NEGRO)
+        pygame.display.flip()
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_ESCAPE:
+                    return
+
+def mostrar_como_jugar():
+    while True:
+        ventana.blit(fondo, (0, 0))
         como_jugar = pygame.image.load("assets/images/como_jugar.png")
         ventana.blit(como_jugar, (0, 20))
         texto = font.render("ESC para volver al menú principal", True, NEGRO)
         ventana.blit(texto, (0, 565))
-        if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_ESCAPE:
-                en_pantalla_como_jugar = False
-    
-    if en_pantalla_partidas:
-        ventana.blit(fondo, (0,0))
-        y_offset = 50  
+        pygame.display.flip()
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_ESCAPE:
+                    return
+
+def mostrar_partidas():
+    while True:
+        ventana.blit(fondo, (0, 0))
+        y_offset = 50
         for linea in datos:
-            texto = font.render(linea, True, BLANCO)  
-            ventana.blit(texto, (50, y_offset))  
-            y_offset += 40  
-            texto = font.render("ESC para volver al menú principal", True, BLANCO)
-            ventana.blit(texto, (0, 565))
-        if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_ESCAPE:
-                en_pantalla_partidas = False
-    
-    if en_pantalla_jugar:
-        ventana.blit(fondo, (0,0))
+            texto = font.render(linea, True, BLANCO)
+            ventana.blit(texto, (50, y_offset))
+            y_offset += 40
+        texto = font.render("ESC para volver al menú principal", True, BLANCO)
+        ventana.blit(texto, (0, 565))
+        pygame.display.flip()
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_ESCAPE:
+                    return
+
+def mostrar_juego():
+    nombre = ingresar_usuario()  # Pedir el nombre del usuario
+    while True:
+        ventana.blit(fondo, (0, 0))
         dibujar_botones_blackjack()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                corriendo = False
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
+        pygame.display.flip()
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
-            for boton in botones_blackjack:
-                if boton["rect"].collidepoint(mouse_pos):
+                for boton in botones_blackjack:
+                    if boton["rect"].collidepoint(mouse_pos):
                         if boton["text"] == "DOBLAR":
-                            pass
+                            print(f"{nombre} seleccionó DOBLAR")
                         elif boton["text"] == "PEDIR":
-                            pass
+                            print(f"{nombre} seleccionó PEDIR")
                         elif boton["text"] == "QUEDARSE":
-                            pass
+                            print(f"{nombre} seleccionó QUEDARSE")
                         elif boton["text"] == "SALIR":
-                            en_pantalla_jugar = False
+                            return
+
+
+
+
+while corriendo:
+    MENU_TEXT = font_title.render("BLACKJACK PRIME", True, BLANCO)
+    MENU_RECT = MENU_TEXT.get_rect(center=(400, 125))
+    ventana.blit(fondo, (0, 0))
+    ventana.blit(MENU_TEXT, MENU_RECT)
+    dibujar_botones()
     
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            corriendo = False
+        elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:  
+            mouse_pos = pygame.mouse.get_pos()
+            for boton in botones:
+                if boton["rect"].collidepoint(mouse_pos):
+                    if boton["text"] == "JUGAR":
+                        mostrar_juego()  
+                    elif boton["text"] == "COMO JUGAR":
+                        mostrar_como_jugar()
+                    elif boton["text"] == "VALORES":
+                        mostrar_valores()
+                    elif boton["text"] == "PARTIDAS":
+                        mostrar_partidas()
+                    elif boton["text"] == "SALIR":
+                        corriendo = False
     pygame.display.flip()
-    pygame.display.update()
 
 pygame.quit()
 sys.exit()
