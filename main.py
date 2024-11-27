@@ -1,10 +1,8 @@
 import sys
-import os
 import random
 import pygame
 from constantes import *
 from otras_funciones import *
-from otras_funciones import dibujar_botones
 from guardar_y_cargar import *
 from funciones_menu import mostrar_como_jugar, mostrar_partidas, mostrar_valores
 
@@ -97,8 +95,7 @@ def calcular_valor(mano):
     """
     |Calcula el valor total de la mano de cartas.
     |Argumentos:
-        mano (list): Lista de cartas representadas como cadenas. Cada carta 
-                    debe estar en formato abreviado.
+        mano (list): Lista de cartas representadas como cadenas. Cada carta debe estar en formato abreviado.
     |Retorna:
         int: El valor total de la mano:
             - Figuras (J, Q, K) valen 10.
@@ -147,19 +144,6 @@ corriendo = True
 turno_jugador = True
 revelar_cartas_croupier = False
 resultado = ""
-
-def cargar_jugadores():
-    """
-    |Carga los datos de los jugadores desde un archivo JSON.
-    |Argumentos:
-        None: La funcion no requiere argumentos.
-    |Retorna:
-        dict: Un diccionario con los datos de los jugadores si el archivo "datos.json" existe, retorna un diccionario vacio si el archivo no se encuentra.
-    """
-    if os.path.exists("datos.json"):
-            with open("datos.json", "r") as file:
-                return json.load(file)
-    return {}
 
 def ingresar_usuario():
     """

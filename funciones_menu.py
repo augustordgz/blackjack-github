@@ -5,15 +5,11 @@ from guardar_y_cargar import mostrar_datos_pygame
 
 def mostrar_valores():
     """
-    |Muestra la imagen de los valores de las cartas y un mensaje en la ventana de Pygame. 
-    La ventana se actualiza hasta que el usuario presiona la tecla ESC para volver al menú principal.
+    |Muestra la imagen de los valores de las cartas y un mensaje en la ventana de Pygame, la ventana se actualiza hasta que el usuario presiona la tecla ESC para volver al menú principal.
     |Argumentos:
-        None: La función no recibe argumentos. Depende de variables globales importadas 
-            como `ventana`, `font`, y `fondo` desde el archivo `main`.
+        None: La función no recibe argumentos. Depende de variables globales importadas como `ventana`, `font`, y `fondo` desde el archivo `main`.
     |Retorna:
-        None: La función no devuelve ningún valor. La ventana se actualiza con la imagen de los valores 
-            de las cartas y el mensaje de "ESC para volver al menú principal". La función termina 
-            cuando el usuario presiona la tecla ESC.
+        None: La función no devuelve ningún valor. La ventana se actualiza con la imagen de los valores de las cartas y el mensaje de "ESC para volver al menú principal". La función termina cuando el usuario presiona la tecla ESC.
     
     """
     from main import ventana, font, fondo
@@ -33,6 +29,14 @@ def mostrar_valores():
                     return
 
 def mostrar_como_jugar():
+    """
+    |Muestra la imagen de cómo jugar y un mensaje en la ventana de Pygame. 
+    La ventana se actualiza hasta que el usuario presiona la tecla ESC para regresar al menú principal.
+    |Argumentos:
+        None: La función no recibe argumentos. Depende de variables globales importadas como `ventana`, `font`, `fondo` y `NEGRO` desde el archivo `main`.
+    |Retorna:
+        None: La función no devuelve ningún valor. La ventana se actualiza con la imagen de cómo jugar y el mensaje de "ESC para volver al menú principal". La función termina cuando el usuario presiona la tecla ESC para regresar al menú principal.
+    """
     from main import ventana, font, fondo
     while True:
         ventana.blit(fondo, (0, 0))
@@ -50,6 +54,14 @@ def mostrar_como_jugar():
                     return
 
 def mostrar_partidas():
+    """
+    |Muestra los datos de las partidas y un mensaje en la ventana de Pygame. 
+    La ventana se actualiza hasta que el usuario presiona la tecla ESC para regresar al menú principal.
+    |Argumentos:
+        None: La función no recibe argumentos. Depende de variables globales importadas  como `ventana`, `font`, `fondo` y la función `mostrar_datos_pygame` desde el archivo `main`.
+    |Retorna:
+        None: La función no devuelve ningún valor. La ventana se actualiza con los datos de las partidas y el mensaje de "ESC para volver al menú principal". La función termino cuando el usuario presiona la tecla ESC para regresar al menú principal.
+    """
     from main import ventana, font, fondo
     while True:
         ventana.blit(fondo, (0, 0))

@@ -1,3 +1,5 @@
+import os
+import json
 import pygame
 from constantes import GRIS, NEGRO, BLANCO
 
@@ -22,11 +24,9 @@ def dibujar_botones():
     """
     |Dibuja un conjunto de botones en la ventana principal usando Pygame.
     |Argumentos:
-        None: Esta funcion no recibe argumentos directamente. Depende de 
-            variables globales como `botones`, `ventana`, `font` y `NEGRO`.
+        None: Esta funcion no recibe argumentos directamente. Depende de variables globales como `botones`, `ventana`, `font` y `NEGRO`.
     |Retorna:
-        None: La funcion no devuelve ningun valor. Los botones se renderizan 
-            directamente en la ventana.
+        None: La funcion no devuelve ningun valor. Los botones se renderizan directamente en la ventana.
     """
     for boton in botones:
         pygame.draw.rect(ventana, boton["color"], boton["rect"])
@@ -39,11 +39,9 @@ def dibujar_botones_blackjack():
     """
     |Dibuja un conjunto de botones especificos para el modo Blackjack en la ventana principal usando Pygame.
     |Argumentos:
-        None: Esta funcion no recibe argumentos directamente. Depende de 
-            variables globales como `botones_blackjack`, `ventana`, `font` y `NEGRO`.
+        None: Esta funcion no recibe argumentos directamente. Depende de variables globales como `botones_blackjack`, `ventana`, `font` y `NEGRO`.
     |Retorna:
-        None: La funcion no devuelve ningun valor. Los botones se renderizan 
-            directamente en la ventana.
+        None: La funcion no devuelve ningun valor. Los botones se renderizan directamente en la ventana.
     """
     for boton in botones_blackjack:
         pygame.draw.rect(ventana, boton["color"], boton["rect"])
@@ -66,3 +64,16 @@ def mostrar_texto(texto, tamaño, x, y):
     fuente = pygame.font.Font("assets/fonts/static/PixelifySans-Medium.ttf", tamaño)
     superficie_texto = fuente.render(texto, True, BLANCO)
     ventana.blit(superficie_texto, (x, y))
+
+def cargar_jugadores():
+    """
+    |Carga los datos de los jugadores desde un archivo JSON.
+    |Argumentos:
+        None: La funcion no requiere argumentos.
+    |Retorna:
+        dict: Un diccionario con los datos de los jugadores si el archivo "datos.json" existe, retorna un diccionario vacio si el archivo no se encuentra.
+    """
+    if os.path.exists("datos.json"):
+            with open("datos.json", "r") as file:
+                return json.load(file)
+    return {}

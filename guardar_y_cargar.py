@@ -12,8 +12,7 @@ def guardar_partida(nombre, partidas_jugadas, partidas_ganadas, partidas_perdida
         partidas_perdidas (int): Numero de partidas perdidas por el jugador.
         empates (int): Numero de partidas empatadas por el jugador.
     |Retorna:
-        None ,La funcion no devuelve ningun valor. Los datos se guardan 
-            directamente en el archivo "datos.json".
+        None ,La funcion no devuelve ningun valor. Los datos se guardan directamente en el archivo "datos.json".
     """
     try:
         with open("datos.json", "r") as file:
@@ -36,7 +35,7 @@ def mostrar_datos_pygame(ventana):
     |Muestra los datos de los usuarios almacenados en un archivo JSON en una ventana usando Pygame.
     |Argumentos:
         ventana (pygame.Surface): La superficie de Pygame donde se renderizaran los datos.
-    Retorna:
+    |Retorna:
         None ,la funcion no devuelve ningun valor. Los datos se muestran directamente en la ventana.
     """
     font = pygame.font.Font("assets/fonts/static/PixelifySans-Medium.ttf", 36)  # Fuente predeterminada con tamaño 36
