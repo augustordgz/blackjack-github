@@ -3,8 +3,13 @@ import os
 import random
 import pygame
 from constantes import *
-from blackjack import jugar
 from otras_funciones_blackjack import *
+from guardar import *
+
+partidas_jugadas = 0
+partidas_ganadas = 0
+partidas_perdidas = 0
+empates = 0
 
 # Inicialización de Pygame y mixer para audio
 pygame.init()
@@ -95,10 +100,9 @@ botones = [
 ]
 
 botones_blackjack = [
-    {"text": "DOBLAR", "rect": pygame.Rect(70, 100, 150, 50), "color": GRIS},
-    {"text": "PEDIR", "rect": pygame.Rect(70, 200, 150, 50), "color": GRIS},
-    {"text": "QUEDARSE", "rect": pygame.Rect(70, 300, 150, 50), "color": GRIS},
-    {"text": "SALIR", "rect": pygame.Rect(70, 400, 150, 50), "color": GRIS}
+    {"text": "DOBLAR", "rect": pygame.Rect(30, 100, 150, 50), "color": GRIS},
+    {"text": "PEDIR", "rect": pygame.Rect(30, 200, 150, 50), "color": GRIS},
+    {"text": "QUEDARSE", "rect": pygame.Rect(30, 300, 150, 50), "color": GRIS}
 ]
 
 # Funciones para dibujar botones en la pantalla
@@ -117,16 +121,8 @@ def dibujar_botones_blackjack():
         ventana.blit(texto2, texto_rect2)
 
 
-mazo = list(cartas.keys()) * 4  # Cada carta aparece 4 veces
-random.shuffle(mazo)
-
 # Función para calcular el valor de una mano
 def calcular_valor(mano):
-    """
-    Calcula el valor total de una mano en Blackjack.
-    :param mano: Lista de cartas (ejemplo: ["2C", "AP", "RD"]).
-    :return: Valor total de la mano.
-    """
     valor = 0
     ases = 0
     for carta in mano:
@@ -146,25 +142,21 @@ def calcular_valor(mano):
         ases -= 1
     return valor
 
-def mostrar_texto(texto, tamaño, x, y, color=BLANCO):
-    fuente = pygame.font.Font(None, tamaño)
-    superficie_texto = fuente.render(texto, True, color)
+def mostrar_texto(texto, tamaño, x, y):
+    fuente = pygame.font.Font("assets/fonts/static/PixelifySans-Medium.ttf", tamaño)
+    superficie_texto = fuente.render(texto, True, BLANCO)
     ventana.blit(superficie_texto, (x, y))
 
 # Función para mostrar cartas
 def mostrar_cartas(mano, x_inicio, y, mostrar_segunda=True):
     for i, carta in enumerate(mano):
-        if i == 1 and not mostrar_segunda:
+        if i == 1 and not mostrar_segunda:  # No mostrar la segunda carta del croupier
             ventana.blit(reverso_carta, (x_inicio + i * 100, y))
         else:
             ventana.blit(imagenes_cartas[carta], (x_inicio + i * 100, y))
 
 
-# Definición de variables que se utilizan para las diferentes pantallas
 corriendo = True
-datos = mostrar_datos()
-mano_jugador = [mazo.pop(), mazo.pop()]
-mano_croupier = [mazo.pop(), mazo.pop()]
 turno_jugador = True
 revelar_cartas_croupier = False
 resultado = ""
@@ -203,7 +195,6 @@ def ingresar_usuario():
                 else:
                     nombre += evento.unicode  # Agregar caracteres
 
-
 def mostrar_valores():
     while True:
         ventana.blit(fondo, (0, 0))
@@ -241,15 +232,10 @@ def mostrar_como_jugar():
 def mostrar_partidas():
     while True:
         ventana.blit(fondo, (0, 0))
-        y_offset = 50
-        for linea in datos:
-            texto = font.render(linea, True, BLANCO)
-            ventana.blit(texto, (50, y_offset))
-            y_offset += 40
+        mostrar_datos_pygame(ventana) 
         texto = font.render("ESC para volver al menú principal", True, BLANCO)
         ventana.blit(texto, (0, 565))
         pygame.display.flip()
-
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
@@ -258,38 +244,113 @@ def mostrar_partidas():
                 if evento.key == pygame.K_ESCAPE:
                     return
 
-def mostrar_juego():
-    nombre = ingresar_usuario()  # Pedir el nombre del usuario
-    while True:
-        ventana.blit(fondo, (0, 0))
-        dibujar_botones_blackjack()
-        pygame.display.flip()
 
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-                mouse_pos = pygame.mouse.get_pos()
-                for boton in botones_blackjack:
-                    if boton["rect"].collidepoint(mouse_pos):
-                        if boton["text"] == "DOBLAR":
-                            print(f"{nombre} seleccionó DOBLAR")
-                        elif boton["text"] == "PEDIR":
-                            print(f"{nombre} seleccionó PEDIR")
-                        elif boton["text"] == "QUEDARSE":
-                            print(f"{nombre} seleccionó QUEDARSE")
-                        elif boton["text"] == "SALIR":
-                            return
-
-
-
+def mostrar_juego(nombre=None):
+    global partidas_jugadas, partidas_ganadas, partidas_perdidas, empates
+    # Si el nombre no se proporciona, pedirlo
+    if not nombre:
+        nombre = ingresar_usuario()
+    sonido_crear_baraja.play()
+    while True:  # Bucle principal para jugar varias partidas
+        # Inicializar manos y barajar el mazo
+        mazo = list(cartas.keys())
+        random.shuffle(mazo)
+        mano_jugador = [mazo.pop(), mazo.pop()]
+        mano_croupier = [mazo.pop(), mazo.pop()]
+        turno_jugador = True
+        revelar_cartas_croupier = False
+        resultado = ""
+        while True:  # Bucle para la partida actual
+            ventana.blit(fondo, (0, 0))  # Fondo del juego
+            
+            # Mostrar manos de jugador y croupier
+            mostrar_cartas(mano_jugador, 200, 400)  # Mano del jugador
+            mostrar_cartas(mano_croupier, 200, 100, mostrar_segunda=revelar_cartas_croupier)  # Mano del croupier
+            
+            # Mostrar valores de las manos
+            valor_jugador = calcular_valor(mano_jugador)
+            valor_croupier = calcular_valor(mano_croupier)
+            mostrar_texto(f"{nombre}: {valor_jugador}", 30, 200, 370)
+            
+            if revelar_cartas_croupier:
+                mostrar_texto(f"Croupier: {valor_croupier}", 30, 200, 70)
+            else:
+                mostrar_texto("Croupier: ?", 30, 200, 70)
+            
+            # Mostrar resultado si el juego termina
+            if resultado:
+                mostrar_texto(resultado, 20, 200, 250)
+                mostrar_texto("Presione 'Enter' para otra partida o 'Escape' para salir", 20, 200, 300)
+            
+            # Dibujar botones
+            dibujar_botones_blackjack()
+            pygame.display.flip()
+            # Manejo de eventos
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                
+                if resultado:  # Si el juego terminó
+                    if evento.type == pygame.KEYDOWN:
+                        if evento.key == pygame.K_RETURN:  # Nueva partida
+                            return mostrar_juego(nombre)  # Iniciar otra partida con el mismo nombre
+                        elif evento.key == pygame.K_ESCAPE:  # Volver al menú
+                            # Cuando llames a guardar_partida:
+                            guardar_partida(nombre, partidas_jugadas, partidas_ganadas, partidas_perdidas, empates)     
+                            return  # Salir de la función y regresar al menú principal
+                
+                elif turno_jugador and evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
+                    mouse_pos = pygame.mouse.get_pos()
+                    for boton in botones_blackjack:
+                        if boton["rect"].collidepoint(mouse_pos):
+                            if boton["text"] == "DOBLAR":
+                                mano_jugador.append(mazo.pop())
+                                valor_jugador = calcular_valor(mano_jugador)
+                                turno_jugador = False
+                                break
+                            elif boton["text"] == "PEDIR":
+                                mano_jugador.append(mazo.pop())
+                                valor_jugador = calcular_valor(mano_jugador)
+                                sonido_cartas.play()
+                                if valor_jugador > 21:  # Si el jugador se pasa
+                                    resultado = f"{nombre} pierde, te pasaste de 21."
+                                    revelar_cartas_croupier = True
+                                break
+                            elif boton["text"] == "QUEDARSE":
+                                turno_jugador = False
+                                break
+            # Lógica del turno del croupier
+            if not turno_jugador and not resultado:
+                revelar_cartas_croupier = True
+                while calcular_valor(mano_croupier) < 17:  # El croupier pide si tiene menos de 17
+                    mano_croupier.append(mazo.pop())
+                    sonido_cartas.play()
+                valor_croupier = calcular_valor(mano_croupier)
+                
+                # Determinar el resultado
+                if valor_croupier > 21:
+                    resultado = f"{nombre} gana, el croupier se pasó."
+                    partidas_jugadas += 1
+                    partidas_ganadas += 1
+                elif valor_jugador > valor_croupier:
+                    resultado = f"{nombre} gana, tiene más puntos que el croupier."
+                    partidas_jugadas += 1
+                    partidas_ganadas += 1
+                elif valor_croupier == valor_jugador:
+                    resultado = "Empate."
+                    partidas_jugadas += 1
+                    empates += 1
+                else:
+                    resultado = f"{nombre} pierde, el croupier tiene más puntos."
+                    partidas_jugadas += 1
+                    partidas_perdidas += 1
 
 while corriendo:
-    MENU_TEXT = font_title.render("BLACKJACK PRIME", True, BLANCO)
-    MENU_RECT = MENU_TEXT.get_rect(center=(400, 125))
+    MENU_TEXTO = font_title.render("BLACKJACK PRIME", True, BLANCO)
+    MENU_RECT = MENU_TEXTO.get_rect(center=(400, 125))
     ventana.blit(fondo, (0, 0))
-    ventana.blit(MENU_TEXT, MENU_RECT)
+    ventana.blit(MENU_TEXTO, MENU_RECT)
     dibujar_botones()
     
     for evento in pygame.event.get():
