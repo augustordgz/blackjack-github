@@ -3,19 +3,21 @@ import os
 import random
 import pygame
 from constantes import *
-from otras_funciones_blackjack import *
-from guardar import *
+from otras_funciones import *
+from otras_funciones import dibujar_botones
+from guardar_y_cargar import *
+from funciones_menu import mostrar_como_jugar, mostrar_partidas, mostrar_valores
 
 partidas_jugadas = 0
 partidas_ganadas = 0
 partidas_perdidas = 0
 empates = 0
 
-# Inicialización de Pygame y mixer para audio
+# Inicializacion de Pygame y mixer para audio
 pygame.init()
 pygame.mixer.init()
 
-# Configuración de la ventana y sonidos del juego
+# Configuracion de la ventana y sonidos del juego
 ventana = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption(NOMBRE_JUEGO)
 
@@ -28,7 +30,7 @@ sonido_crear_baraja.set_volume(0.1)
 sonido_cartas = pygame.mixer.Sound("assets/audio/card-place-2.ogg")
 sonido_cartas.set_volume(0.1)
 
-# Carga de imagenes de fondo y la fuente de texto para el menú
+# Carga de imagenes de fondo y la fuente de texto para el menu
 cartas = {
     "2C": "assets/images/cards/PNG/Large/2_corazones.png",
     "3C": "assets/images/cards/PNG/Large/3_corazones.png",
@@ -90,39 +92,20 @@ fondo = pygame.image.load("assets/images/fondo.jpg")
 font = pygame.font.Font("assets/fonts/static/PixelifySans-Regular.ttf", 30)
 font_title = pygame.font.Font("assets/fonts/static/PixelifySans-Regular.ttf", 72)
 
-# Definición de colores y botones del menú
-botones = [
-    {"text": "JUGAR", "rect": pygame.Rect(150, 200, 200, 50), "color": GRIS},
-    {"text": "COMO JUGAR", "rect": pygame.Rect(450, 200, 200, 50), "color": GRIS},
-    {"text": "VALORES", "rect": pygame.Rect(150, 300, 200, 50), "color": GRIS},
-    {"text": "PARTIDAS", "rect": pygame.Rect(450, 300, 200, 50), "color": GRIS},
-    {"text": "SALIR", "rect": pygame.Rect(300, 400, 200, 50), "color": GRIS},
-]
-
-botones_blackjack = [
-    {"text": "DOBLAR", "rect": pygame.Rect(30, 100, 150, 50), "color": GRIS},
-    {"text": "PEDIR", "rect": pygame.Rect(30, 200, 150, 50), "color": GRIS},
-    {"text": "QUEDARSE", "rect": pygame.Rect(30, 300, 150, 50), "color": GRIS}
-]
-
-# Funciones para dibujar botones en la pantalla
-def dibujar_botones():
-    for boton in botones:
-        pygame.draw.rect(ventana, boton["color"], boton["rect"])
-        texto = font.render(boton["text"], True, NEGRO)
-        texto_rect = texto.get_rect(center=boton["rect"].center)
-        ventana.blit(texto, texto_rect)
-
-def dibujar_botones_blackjack():
-    for boton in botones_blackjack:
-        pygame.draw.rect(ventana, boton["color"], boton["rect"])
-        texto2 = font.render(boton["text"], True, NEGRO)
-        texto_rect2 = texto2.get_rect(center=boton["rect"].center)
-        ventana.blit(texto2, texto_rect2)
-
-
 # Función para calcular el valor de una mano
 def calcular_valor(mano):
+    """
+    |Calcula el valor total de la mano de cartas.
+    |Argumentos:
+        mano (list): Lista de cartas representadas como cadenas. Cada carta 
+                    debe estar en formato abreviado.
+    |Retorna:
+        int: El valor total de la mano:
+            - Figuras (J, Q, K) valen 10.
+            - Ases valen inicialmente 11, pero pueden ajustarse a 1 si 
+            el valor total de la mano supera 21.
+            - Cartas numericas tienen su valor numerico.
+    """
     valor = 0
     ases = 0
     for carta in mano:
@@ -133,7 +116,7 @@ def calcular_valor(mano):
             ases += 1
         else:
             try:
-                valor += int(carta[:-1])  # Cartas numéricas (ejemplo: "2C" -> 2)
+                valor += int(carta[:-1])  # Cartas numericas (ejemplo: "2C" -> 2)
             except ValueError:
                 print(f"Error al interpretar la carta: {carta}")
     # Ajustar los Ases si el valor total excede 21
@@ -142,19 +125,23 @@ def calcular_valor(mano):
         ases -= 1
     return valor
 
-def mostrar_texto(texto, tamaño, x, y):
-    fuente = pygame.font.Font("assets/fonts/static/PixelifySans-Medium.ttf", tamaño)
-    superficie_texto = fuente.render(texto, True, BLANCO)
-    ventana.blit(superficie_texto, (x, y))
-
 # Función para mostrar cartas
 def mostrar_cartas(mano, x_inicio, y, mostrar_segunda=True):
+    """
+    |Muestra las cartas de la mano del jugador y del croupier.
+    |Argumentos:
+        mano (list): Lista de cartas representadas como cadenas. Cada carta corresponde a una clave en `imagenes_cartas`.
+        x_inicio (int): Coordenada X inicial para posicionar las cartas.
+        i (int): Coordenada Y donde se mostraran las cartas.
+        mostrar_segunda (bool): Si es True, muestra todas las cartas. Si es False, oculta la segunda carta.
+    |Retorna:
+        None: La funcion no devuelve ningun valor. Las cartas se renderizan directamente en la ventana de Pygame.
+    """
     for i, carta in enumerate(mano):
         if i == 1 and not mostrar_segunda:  # No mostrar la segunda carta del croupier
             ventana.blit(reverso_carta, (x_inicio + i * 100, y))
         else:
             ventana.blit(imagenes_cartas[carta], (x_inicio + i * 100, y))
-
 
 corriendo = True
 turno_jugador = True
@@ -162,26 +149,36 @@ revelar_cartas_croupier = False
 resultado = ""
 
 def cargar_jugadores():
+    """
+    |Carga los datos de los jugadores desde un archivo JSON.
+    |Argumentos:
+        None: La funcion no requiere argumentos.
+    |Retorna:
+        dict: Un diccionario con los datos de los jugadores si el archivo "datos.json" existe, retorna un diccionario vacio si el archivo no se encuentra.
+    """
     if os.path.exists("datos.json"):
-        with open("datos.json", "r") as file:
-            return json.load(file)
+            with open("datos.json", "r") as file:
+                return json.load(file)
     return {}
 
 def ingresar_usuario():
+    """
+    |Permite al usuario ingresar su nombre mediante una interfaz gráfica con Pygame.
+    |Argumentos:
+        None: La función no requiere argumentos. Depende de variables globales como `ventana`, `fondo`, y `BLANCO`.
+    |Retorna:
+        str: El nombre ingresado por el usuario, siempre que sea válido (no esté vacío y no esté repetido en los datos de jugadores previamente cargados).
+    """
     jugadores = cargar_jugadores()
     font = pygame.font.Font("assets/fonts/static/PixelifySans-Medium.ttf", 36)
     nombre = ""
-    
     while True:
         ventana.blit(fondo, (0,0))
         texto_ingresar = font.render("Ingrese su nombre:", True, BLANCO)
         texto_nombre = font.render(nombre, True, BLANCO)
-        
         ventana.blit(texto_ingresar, (100, 200))
         ventana.blit(texto_nombre, (450, 200))
-        
         pygame.display.flip()  # Asegurar que la pantalla se actualice
-        
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
@@ -194,56 +191,6 @@ def ingresar_usuario():
                     nombre = nombre[:-1]
                 else:
                     nombre += evento.unicode  # Agregar caracteres
-
-def mostrar_valores():
-    while True:
-        ventana.blit(fondo, (0, 0))
-        valores_cartas = pygame.image.load("assets/images/valores_cartas.png")
-        ventana.blit(valores_cartas, (0, 50))
-        texto = font.render("ESC para volver al menú principal", True, BLANCO)
-        ventana.blit(texto, (0, 565))
-        pygame.display.flip()
-
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_ESCAPE:
-                    return
-
-def mostrar_como_jugar():
-    while True:
-        ventana.blit(fondo, (0, 0))
-        como_jugar = pygame.image.load("assets/images/como_jugar.png")
-        ventana.blit(como_jugar, (0, 20))
-        texto = font.render("ESC para volver al menú principal", True, NEGRO)
-        ventana.blit(texto, (0, 565))
-        pygame.display.flip()
-
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_ESCAPE:
-                    return
-
-def mostrar_partidas():
-    while True:
-        ventana.blit(fondo, (0, 0))
-        mostrar_datos_pygame(ventana) 
-        texto = font.render("ESC para volver al menú principal", True, BLANCO)
-        ventana.blit(texto, (0, 565))
-        pygame.display.flip()
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_ESCAPE:
-                    return
-
 
 def mostrar_juego(nombre=None):
     global partidas_jugadas, partidas_ganadas, partidas_perdidas, empates
@@ -262,26 +209,21 @@ def mostrar_juego(nombre=None):
         resultado = ""
         while True:  # Bucle para la partida actual
             ventana.blit(fondo, (0, 0))  # Fondo del juego
-            
             # Mostrar manos de jugador y croupier
             mostrar_cartas(mano_jugador, 200, 400)  # Mano del jugador
             mostrar_cartas(mano_croupier, 200, 100, mostrar_segunda=revelar_cartas_croupier)  # Mano del croupier
-            
             # Mostrar valores de las manos
             valor_jugador = calcular_valor(mano_jugador)
             valor_croupier = calcular_valor(mano_croupier)
             mostrar_texto(f"{nombre}: {valor_jugador}", 30, 200, 370)
-            
             if revelar_cartas_croupier:
                 mostrar_texto(f"Croupier: {valor_croupier}", 30, 200, 70)
             else:
                 mostrar_texto("Croupier: ?", 30, 200, 70)
-            
             # Mostrar resultado si el juego termina
             if resultado:
                 mostrar_texto(resultado, 20, 200, 250)
                 mostrar_texto("Presione 'Enter' para otra partida o 'Escape' para salir", 20, 200, 300)
-            
             # Dibujar botones
             dibujar_botones_blackjack()
             pygame.display.flip()
@@ -290,7 +232,6 @@ def mostrar_juego(nombre=None):
                 if evento.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                
                 if resultado:  # Si el juego terminó
                     if evento.type == pygame.KEYDOWN:
                         if evento.key == pygame.K_RETURN:  # Nueva partida
@@ -299,7 +240,6 @@ def mostrar_juego(nombre=None):
                             # Cuando llames a guardar_partida:
                             guardar_partida(nombre, partidas_jugadas, partidas_ganadas, partidas_perdidas, empates)     
                             return  # Salir de la función y regresar al menú principal
-                
                 elif turno_jugador and evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
                     mouse_pos = pygame.mouse.get_pos()
                     for boton in botones_blackjack:
@@ -315,6 +255,8 @@ def mostrar_juego(nombre=None):
                                 sonido_cartas.play()
                                 if valor_jugador > 21:  # Si el jugador se pasa
                                     resultado = f"{nombre} pierde, te pasaste de 21."
+                                    partidas_jugadas += 1
+                                    partidas_perdidas += 1
                                     revelar_cartas_croupier = True
                                 break
                             elif boton["text"] == "QUEDARSE":
@@ -327,7 +269,6 @@ def mostrar_juego(nombre=None):
                     mano_croupier.append(mazo.pop())
                     sonido_cartas.play()
                 valor_croupier = calcular_valor(mano_croupier)
-                
                 # Determinar el resultado
                 if valor_croupier > 21:
                     resultado = f"{nombre} gana, el croupier se pasó."
@@ -352,7 +293,6 @@ while corriendo:
     ventana.blit(fondo, (0, 0))
     ventana.blit(MENU_TEXTO, MENU_RECT)
     dibujar_botones()
-    
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             corriendo = False
