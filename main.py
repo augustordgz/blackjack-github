@@ -10,6 +10,10 @@ partidas_jugadas = 0
 partidas_ganadas = 0
 partidas_perdidas = 0
 empates = 0
+corriendo = True
+turno_jugador = True
+revelar_cartas_croupier = False
+resultado = ""
 
 # Inicializacion de Pygame y mixer para audio
 pygame.init()
@@ -139,11 +143,6 @@ def mostrar_cartas(mano, x_inicio, y, mostrar_segunda=True):
             ventana.blit(reverso_carta, (x_inicio + i * 100, y))
         else:
             ventana.blit(imagenes_cartas[carta], (x_inicio + i * 100, y))
-
-corriendo = True
-turno_jugador = True
-revelar_cartas_croupier = False
-resultado = ""
 
 def ingresar_usuario():
     """
