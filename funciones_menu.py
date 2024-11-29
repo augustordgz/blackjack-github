@@ -10,7 +10,6 @@ def mostrar_valores():
         None: La función no recibe argumentos. Depende de variables globales importadas como `ventana`, `font`, y `fondo` desde el archivo `main`.
     |Retorna:
         None: La función no devuelve ningún valor. La ventana se actualiza con la imagen de los valores de las cartas y el mensaje de "ESC para volver al menú principal". La función termina cuando el usuario presiona la tecla ESC.
-    
     """
     from main import ventana, font, fondo
     while True:

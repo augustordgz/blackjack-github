@@ -1,9 +1,16 @@
 [
     {
-        "Nombre": "Bareiro 7",
-        "Partidas Jugadas": 16,
-        "Partidas Ganadas": 12,
+        "Nombre": "Augusto",
+        "Partidas Jugadas": 5,
+        "Partidas Ganadas": 2,
         "Partidas Perdidas": 3,
+        "Partidas Empatadas": 0
+    },
+    {
+        "Nombre": "Enzo",
+        "Partidas Jugadas": 4,
+        "Partidas Ganadas": 1,
+        "Partidas Perdidas": 2,
         "Partidas Empatadas": 1
     }
 ]

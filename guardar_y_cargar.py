@@ -62,4 +62,4 @@ def mostrar_datos_pygame(ventana):
                 y_offset += 50  # Espacio entre los jugadores
     except FileNotFoundError:
         mensaje = font.render("No hay datos guardados para mostrar.", True, BLANCO)
-        ventana.blit(mensaje, (30, y_offset))
+        ventana.blit(mensaje, (30, 40))
